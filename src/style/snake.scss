@@ -1,0 +1,29 @@
+@import './base.scss';
+@import './sprite.scss';
+
+$snake-node-classes:
+  head-u,head-r,head-d,head-l,
+  tail-u,tail-r,tail-d,tail-l,
+  body-1,body-2,body-3,body-4,body-v,body-h;
+.snake {
+  z-index: 1;
+  filter: var(--color-filter) $sprite-shadow-filter;
+
+  @for $i from 0 through 13 {
+    .node.#{nth($snake-node-classes, $i + 1)} {
+      background-position: #{floor($i % 4) * -16px} #{floor($i / 4) * -16px};
+    }
+  }
+
+  .node {
+    filter: none;
+
+    &.head-u,
+    &.head-r,
+    &.head-d,
+    &.head-l {
+      z-index: 1;
+    }
+  }
+}
+

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="dist/style/index.css" />
+    <title>Snake</title>
+</head>
+    <div id="game-container" class="game-container">
+        <div class="hud">
+            <div class="health-bar"></div>
+            <div class="score-display">
+                <span class="score-number">0</span>
+                <label>分</label>
+            </div>
+        </div>
+        <div class="fps"><label>FPS:</label><span class="value"></span></div>
+        <div class="overlay game-start">按回车/空格开始游戏</div>
+        <div class="overlay game-pause">游戏暂停，按回车/空格继续游戏</div>
+        <div class="overlay game-over">
+            <div>游戏结束</div>
+            <div>按回车/空格重新开始游戏</div>
+        </div>
+    </div>
+
+    <script src="dist/bundle.js"></script>
+</body>
+</html>

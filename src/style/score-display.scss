@@ -1,0 +1,16 @@
+$health-bar-height: 10px;
+
+.score-display {
+  width: 140px;
+  text-align: right;
+
+  > .score-number {
+    font-weight: bold;
+    font-size: 1.4em;
+  }
+
+  > label {
+    color: #999;
+    font-size: 12px;
+  }
+}

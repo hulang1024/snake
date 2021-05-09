@@ -1,0 +1,11 @@
+@import './base.scss';
+@import './sprite.scss';
+
+.map {
+  position: relative;
+  width: var(--map-width, $sprite-size * 20);
+  height: var(--map-height, $sprite-size * 16);
+  background: #ccc;
+  border: $map_padding solid transparent;
+  border-radius: 4px;
+}

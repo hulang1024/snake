@@ -1,0 +1,21 @@
+$health-bar-height: 10px;
+
+.health-bar {
+  width: 100%;
+  height: $health-bar-height;
+  padding: 2px;
+  background: #888;
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: inset 0px 0px 1px 1px rgba(0,0,0,0.2);
+  box-sizing: border-box;
+
+  > div {
+    width: var(--value);
+    height: 100%;
+    background: #e60000;
+    border: 1px solid #ff3333;
+    box-sizing: border-box;
+    border-radius: inherit;
+  }
+}
