@@ -1,19 +1,20 @@
 import DisplayObject from "./DisplayObject";
-import Sprite, { SPRITE_SIZE } from "./sprite";
+import Sprite from "./sprite";
 
 export default class GameMap extends DisplayObject {
-
   private _sprites: Set<Sprite> = new Set();
   public get sprites() { return this._sprites; }
 
-  private _width = SPRITE_SIZE * 30;
+  private _width;
   public get width() { return this._width; }
 
-  private _height = SPRITE_SIZE * 24;
+  private _height;
   public get height() { return this._height; }
 
-  constructor() {
+  constructor(width: number, height: number) {
     super();
+    this._width = width;
+    this._height = height;
 
     this.el.classList.add('map');
     this.el.style.setProperty('--map-width', `${this.width}px`);

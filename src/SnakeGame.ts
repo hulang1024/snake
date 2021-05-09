@@ -11,9 +11,11 @@ import { randomInt } from "./utils";
 
 export default class SnakeGame extends Game {
   public container: HTMLElement;
+
   private isOver: boolean = true;
   private isPause: boolean = true;
-  private gameMap: GameMap = new GameMap();
+
+  private gameMap: GameMap;
   private snake: Snake;
   private rabbit: Rabbit;
 
@@ -24,11 +26,16 @@ export default class SnakeGame extends Game {
   private gamePauseOverlay: HTMLElement;
   private gameOverOverlay: HTMLElement;
 
-  private objects: Set<DisplayObject> = this.gameMap.sprites;
+  private objects: Set<DisplayObject>;
 
   constructor() {
     super();
+    
+    const mapWidth = Math.min(document.body.offsetWidth - 8, SPRITE_SIZE * 30);
+    const mapHeight = Math.min(document.body.offsetHeight - 48, SPRITE_SIZE * 24);
+    this.gameMap = new GameMap(mapWidth, mapHeight);
 
+    this.objects = this.gameMap.sprites;
     this.rabbit = new Rabbit(this.gameMap);
     this.snake = new Snake(this.gameMap);
     this.scoreDisplay = new ScoreDisplay();
@@ -37,7 +44,9 @@ export default class SnakeGame extends Game {
     const container = document.querySelector('.game-container') as HTMLElement;
     this.container = container;
     
-    container.appendChild(this.gameMap.el);
+    const mapContainer = document.querySelector('.map-container');
+    mapContainer.appendChild(this.gameMap.el);
+
     this.gameStartOverlay = document.querySelector('.game-start');
     this.gamePauseOverlay = document.querySelector('.game-pause');
     this.gameOverOverlay = document.querySelector('.game-over');

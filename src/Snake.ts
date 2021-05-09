@@ -251,7 +251,6 @@ class SnakeNode extends Sprite {
     return new SnakeNode(SnakeNode.endNodeClass('head', dir), dir);
   }
 
-
   public static body(dir: Dir, type?: string) {
     return new SnakeNode(type ? `body-${type}` : 'body', dir);
   }
