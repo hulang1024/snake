@@ -14,4 +14,4 @@ export default class GameAudio {
   }
 }
 
-GameAudio.add('eat', '/audio/eat.ogg');
+GameAudio.add('eat', 'audio/eat.ogg');
