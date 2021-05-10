@@ -82,16 +82,20 @@ export default class SnakeGame extends Game {
       }
     }
 
+    const { snake } = this;
+
     switch (event.keyCode) {
       case Key.space:
-        this.snake.isSpeedUpToMax = false;
-        this.snake.msSpeed = this.snake.msSpeedMin;
+        snake.isSpeedUpToMax = false;
+        snake.msSpeed = snake.msSpeedMin;
         break;
       case Key.i:
-        this.snake.msSpeedMin += 16.666;
+        if (snake.msSpeedMin > snake.msSpeedMax) {
+          snake.msSpeedMin = Math.max(snake.msSpeedMin - 16.666, 16.666 * 2);
+        }
         break;
       case Key.o:
-        this.snake.msSpeedMin -= 16.666;
+        snake.msSpeedMin += 16.666;
         break;
       case Key.enter:
         if (this.isOver) {
