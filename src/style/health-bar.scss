@@ -1,13 +1,14 @@
 $health-bar-height: 10px;
 
 .health-bar {
-  width: 100%;
+  flex-grow: 1;
   height: $health-bar-height;
+  margin-left: 16px;
   padding: 2px;
   background: #888;
   border-radius: 2px;
   overflow: hidden;
-  box-shadow: inset 0px 0px 1px 1px rgba(0,0,0,0.2);
+  box-shadow: inset 0px 0px 1px 1px rgba(0,0,0,0.6);
   box-sizing: border-box;
 
   > div {

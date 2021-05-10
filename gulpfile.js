@@ -48,7 +48,7 @@ function doWatch(cb) {
 function serve(cb) {
   build();
 
-  const server = gls.static(['dist', 'public', '.']);
+  const server = gls.static(['.', 'dist', 'public']);
   server.start();
   doWatch(cb);
 }

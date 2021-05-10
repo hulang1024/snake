@@ -1,13 +1,22 @@
 import Dir from "./Dir";
-import DisplayObject from "./DisplayObject";
 import Game from "./Game";
 import GameMap from "./GameMap";
 import HealthBar from "./HealthBar";
 import Rabbit from "./Rabbit";
 import ScoreDisplay from "./ScoreDisplay";
 import Snake from "./Snake";
+import SpeedDisplay from "./SpeedDisplay";
 import { SPRITE_SIZE } from "./sprite";
 import { randomInt } from "./utils";
+import { Key } from "./keyboard";
+
+const DIR_KEYS_TABLE = [
+  [Key.up, Key.w],
+  [Key.right, Key.d],
+  [Key.down, Key.s],
+  [Key.left, Key.a]
+];
+
 
 export default class SnakeGame extends Game {
   public container: HTMLElement;
@@ -19,6 +28,7 @@ export default class SnakeGame extends Game {
   private snake: Snake;
   private rabbit: Rabbit;
 
+  private speedDisplay: SpeedDisplay;
   private scoreDisplay: ScoreDisplay;
   private healthBar: HealthBar;
 
@@ -26,18 +36,18 @@ export default class SnakeGame extends Game {
   private gamePauseOverlay: HTMLElement;
   private gameOverOverlay: HTMLElement;
 
-  private objects: Set<DisplayObject>;
-
   constructor() {
     super();
     
     const mapWidth = Math.min(document.body.offsetWidth - 8, SPRITE_SIZE * 30);
-    const mapHeight = Math.min(document.body.offsetHeight - 48, SPRITE_SIZE * 24);
+    const mapHeight = Math.min(document.body.offsetHeight - 60, SPRITE_SIZE * 24);
     this.gameMap = new GameMap(mapWidth, mapHeight);
 
-    this.objects = this.gameMap.sprites;
     this.rabbit = new Rabbit(this.gameMap);
     this.snake = new Snake(this.gameMap);
+
+    this.speedDisplay = new SpeedDisplay();
+    this.speedDisplay.snake = this.snake;
     this.scoreDisplay = new ScoreDisplay();
     this.healthBar = new HealthBar(this.snake);
 
@@ -52,56 +62,64 @@ export default class SnakeGame extends Game {
     this.gameOverOverlay = document.querySelector('.game-over');
 
     this.gameStartOverlay.style.display = 'flex';
+  }
 
-    document.addEventListener('keydown', (event: KeyboardEvent) => {
-      switch (event.keyCode) {
-        case 87:
-        case 38:
-          this.onDirInput(Dir.UP);
-          break;
-        case 68:
-        case 39:
-          this.onDirInput(Dir.RIGHT);
-          break;
-        case 65:
-        case 37:
-          this.onDirInput(Dir.LEFT);
-          break;
-        case 83:
-        case 40:
-          this.onDirInput(Dir.DOWN);
-          break;
-        case 13: // enter
-        case 32: // space
-          if (this.isOver) {
-            this.gameMap.removeSprite(this.snake);
-            this.snake = new Snake(this.gameMap);
-            this.healthBar.snake = this.snake;
-            this.scoreDisplay.score = 0;
-            this.randomRabbitPosition();
-            this.isOver = false;
-          }
-          this.isPause = !this.isPause;
+  public restart() {
+    this.gameMap.removeSprite(this.snake);
+    this.snake = new Snake(this.gameMap);
+    this.speedDisplay.snake = this.snake;
+    this.healthBar.snake = this.snake;
+    this.scoreDisplay.score = 0;
+    this.randomRabbitPosition();
+    this.isOver = false;
+  }
 
-          if (this.isPause) {
-            this.gameStartOverlay.style.display = 'none';
-            this.gamePauseOverlay.style.display = 'flex';
-            this.gameOverOverlay.style.display = 'none';
-          } else {
-            this.gameStartOverlay.style.display = 'none';
-            this.gamePauseOverlay.style.display = 'none';
-            this.gameOverOverlay.style.display = 'none';
-          }
-          break;
+  protected onKeyDown(event: KeyboardEvent) {
+    for (let dir = 0; dir < 4; dir++) {
+      if (DIR_KEYS_TABLE[dir].find((k) => event.keyCode == k)) {
+        this.onDirInput(dir);
+        return;
       }
-    });
+    }
+
+    switch (event.keyCode) {
+      case Key.space:
+        this.snake.isSpeedUpToMax = false;
+        this.snake.msSpeed = this.snake.msSpeedMin;
+        break;
+      case Key.i:
+        this.snake.msSpeedMin += 16.666;
+        break;
+      case Key.o:
+        this.snake.msSpeedMin -= 16.666;
+        break;
+      case Key.enter:
+        if (this.isOver) {
+          this.restart();
+        }
+        this.isPause = !this.isPause;
+
+        this.gameStartOverlay.style.display = 'none';
+        this.gamePauseOverlay.style.display = this.isPause ? 'flex' : 'none';
+        this.gameOverOverlay.style.display = 'none';
+        break;
+    }
   }
 
   protected onUpdate(dt: number): void {
     if (this.isPause) {
       return;
     }
-    this.objects.forEach((object) => object.onUpdate(dt));
+
+    const { snake } = this;
+
+    snake.isSpeedUpToMax = this.keyboard.isPressed(Key.shift)
+      || (!this.keyboard.isPressed(Key.space)
+        && this.keyboard.isPressedAny(...DIR_KEYS_TABLE[snake.dir]));
+    
+    this.gameMap.sprites.forEach((object) => object.onUpdate(dt));
+
+    this.speedDisplay.onUpdate(dt);
     this.healthBar.onUpdate(dt);
     
     if (this.rabbit.isDead) {
@@ -110,7 +128,7 @@ export default class SnakeGame extends Game {
       this.scoreDisplay.score++;
     }
 
-    if (this.snake.isDead) {
+    if (snake.isDead) {
       this.isOver = true;
       this.isPause = true;
       this.gameOverOverlay.style.display = 'flex';

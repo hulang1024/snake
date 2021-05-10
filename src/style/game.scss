@@ -1,5 +1,14 @@
-@import './score-display.scss';
-@import './health-bar.scss';
+@import './fps-display.scss';
+@import './hud.scss';
+@import './rabbit.scss';
+@import 'style/map.scss';
+@import 'style/snake.scss';
+
+html,
+body, * {
+  margin: 0px;
+  padding: 0px;
+}
 
 html,
 body {
@@ -46,56 +55,5 @@ body {
     &.game-over {
       flex-direction: column;
     }
-  }
-}
-
-.hud {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.fps {
-  position: absolute;
-  right: 4px;
-  bottom: 4px;
-  padding: 4px 8px;
-  z-index: 100;
-  font-size: 12px;
-  background: rgba($color: #000000, $alpha: 0.4);
-  color: #fafafa;
-  border-radius: 2px;
-  user-select: none;
-
-  .value {
-    margin-left: 4px;
-    &.good {
-      color: #8bc34a;
-    }
-    &.bad {
-      color: #ff5722;
-    }
-  }
-
-  &:hover {
-    background: rgba($color: #000000, $alpha: 0.6);;
-  }
-}
-
-.rabbit {
-  background-position: -32px -48px;
-  opacity: 1;
-  animation: rabbit-animation 2s linear infinite;
-}
-
-@keyframes rabbit-animation {
-  0% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.5;
   }
 }

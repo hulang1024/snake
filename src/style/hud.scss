@@ -1,0 +1,10 @@
+@import './speed-display.scss';
+@import './score-display.scss';
+@import './health-bar.scss';
+
+.hud {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding-bottom: 8px;
+}

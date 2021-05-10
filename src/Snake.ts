@@ -45,8 +45,19 @@ export default class Snake extends DisplayObject {
 
   private head: SnakeNode;
 
+  public msSpeedMin = 16.666 * 30;
+
+  public msSpeedMax = 16.666 * 2;
+
+  public isSpeedUpToMax = false;
+
   // 多少毫秒移动一步
-  private msSpeed = 16.666 * 20;
+  private _msSpeed = this.msSpeedMin;
+  public get msSpeed() { return this._msSpeed; }
+  public set msSpeed(val: number) { this._msSpeed = val; }
+
+  // 加速度dt因子
+  private accel = 200;
 
   private map: GameMap;
 
@@ -71,6 +82,18 @@ export default class Snake extends DisplayObject {
       return;
     }
 
+    if (this.isSpeedUpToMax) {
+      if (this._msSpeed > this.msSpeedMax) {
+        this._msSpeed = Math.max(this._msSpeed - this.accel * dt, this.msSpeedMax);
+      }
+    } else {
+      if (this._msSpeed < this.msSpeedMin) {
+        this._msSpeed = Math.min(this._msSpeed + this.accel * dt, this.msSpeedMin);
+      } else if (this._msSpeed > this.msSpeedMin) {
+        this._msSpeed = Math.max(this._msSpeed - this.accel * dt, this.msSpeedMin);
+      }
+    }
+
     this.updateHealth(dt);
     if (this.isDead) {
       return;
@@ -78,13 +101,13 @@ export default class Snake extends DisplayObject {
 
     this.updateAccTime += dt * 1000;
 
-    if (this.updateAccTime < this.msSpeed) {
+    if (this.updateAccTime < this._msSpeed) {
       return;
     }
 
-    let offset = Math.round(this.updateAccTime / this.msSpeed);
+    let offset = Math.round(this.updateAccTime / this._msSpeed);
 
-    this.updateAccTime %= this.msSpeed;
+    this.updateAccTime %= this._msSpeed;
 
     // 因为每步都需要检测，所以使用for而不是offset作为距离乘数
     for (; offset > 0; offset--) {
@@ -188,8 +211,8 @@ export default class Snake extends DisplayObject {
     newBodyNode.setPosition(tail.x, tail.y);
     this.nodes.splice(this.nodes.length - 1, 0, newBodyNode);
 
-    if (this.msSpeed > 0) {
-      this.msSpeed = Math.max(16.666, this.msSpeed - 4.16);
+    if (this._msSpeed > 0) {
+      this._msSpeed = Math.max(16.666, this._msSpeed - 4.16);
     }
   }
 
@@ -279,7 +302,7 @@ class SnakeNode extends Sprite {
     return new SnakeNode(SnakeNodeType.TAIL, dir);
   }
   
-  private static BODY_NODE_DIR_STATE_TABLE = [
+  private static readonly BODY_NODE_DIR_STATE_TABLE = [
     ['v', 'tl', null, 'tr'],
     ['br', 'h', 'tr', null],
     [null, 'bl', 'v', 'br'],

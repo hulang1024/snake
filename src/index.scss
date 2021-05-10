@@ -1,3 +1,7 @@
 @import 'style/game.scss';
-@import 'style/map.scss';
-@import 'style/snake.scss';
+
+@font-face {
+  font-family: 'lcd-digital';
+  src: url('fonts/wwDigital.ttf');
+  src: url('fonts/wwDigital.ttf') format('truetype');
+}

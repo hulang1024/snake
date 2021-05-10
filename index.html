@@ -7,20 +7,44 @@
     <link rel="stylesheet" type="text/css" href="index.css" />
     <title>Snake</title>
 </head>
+    <div style="padding: 8px;font-size: 13px;">
+        <p>回车：开始/暂停/继续游戏。</p>
+        <p>方向键/WDSA：控制蛇的移动方向，按下不松开则是加速与Shift键相同</p>
+        <p>Shift：逐渐加速到最大速</p>
+        <p>空格：瞬时减到最小速</p>
+        <p>I：调整加大最小速</p>
+        <p>O：调整减小最小速</p>
+    </div>
     <div id="game-container" class="game-container">
         <div class="hud">
+            <div class="speed-display">
+                <div class="title">
+                    <span>最小</span>
+                    <span>/</span>
+                    <span>当前</span>
+                    <span>/</span>
+                    <span>最大</span>
+                </div>
+                <div class="values">
+                    <span class="value min">-</span>
+                    <span>/</span>
+                    <span class="value cur">-</span>
+                    <span>/</span>
+                    <span class="value max">-</span>
+                </div>
+            </div>
             <div class="health-bar"></div>
             <div class="score-display">
                 <span class="score-number">0</span>
                 <label>分</label>
             </div>
         </div>
-        <div class="fps"><label>FPS:</label><span class="value"></span></div>
-        <div class="overlay game-start">按回车/空格开始游戏</div>
-        <div class="overlay game-pause">游戏暂停，按回车/空格继续游戏</div>
+        <div class="fps-display"><label>FPS:</label><span class="value"></span></div>
+        <div class="overlay game-start">按回车开始/暂停游戏</div>
+        <div class="overlay game-pause">游戏暂停，按回车继续游戏</div>
         <div class="overlay game-over">
             <div>游戏结束</div>
-            <div>按回车/空格重新开始游戏</div>
+            <div>按回车重新开始游戏</div>
         </div>
         <div class="map-container"></div>
     </div>

@@ -1,9 +1,20 @@
 import FPSDisplay from "./FPSDisplay";
+import { Keyboard } from "./keyboard";
 
 export default abstract class Game {
   private fpsDisplay = new FPSDisplay();
+  protected keyboard: Keyboard;
 
   constructor() {
+    this.setupUpdateLoop();
+
+    this.keyboard = new Keyboard({
+      onKeyDown: this.onKeyDown.bind(this),
+      onKeyUp: this.onKeyUp.bind(this)
+    });
+  }
+
+  private setupUpdateLoop() {
     const fpsDisplayUpdate = this.fpsDisplay.onUpdate.bind(this.fpsDisplay);
     const onUpdate = this.onUpdate.bind(this);
 
@@ -20,4 +31,9 @@ export default abstract class Game {
   }
 
   protected abstract onUpdate(dt: number): void;
+
+  protected onKeyDown(event: KeyboardEvent) {}
+
+  protected onKeyUp(event: KeyboardEvent) {}
+
 }

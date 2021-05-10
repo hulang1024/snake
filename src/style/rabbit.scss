@@ -1,0 +1,17 @@
+.rabbit {
+  background-position: -32px -48px;
+  opacity: 1;
+  animation: rabbit-animation 2s linear infinite;
+}
+
+@keyframes rabbit-animation {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}

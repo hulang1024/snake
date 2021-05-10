@@ -1,0 +1,22 @@
+.speed-display {
+  display: flex;
+  flex-direction: column;
+  width: 130px;
+  padding: 2px 4px;
+  background: rgba(0,0,0,0.6);
+  filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.2));
+  color: #f6f6f6;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: 'lcd-digital';
+
+  > .title,
+  > .values {
+    display: flex;
+    justify-content: space-around;
+  }
+  > .values > .value {
+    color: #76ff03;
+    text-shadow: 0 0 6px #76ff03;
+  }
+}
