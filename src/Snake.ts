@@ -46,7 +46,7 @@ export default class Snake extends DisplayObject {
   private head: SnakeNode;
 
   // 多少毫秒移动一步
-  private msSpeed = 16.666 * 14;
+  private msSpeed = 16.666 * 20;
 
   private map: GameMap;
 
@@ -234,115 +234,84 @@ export default class Snake extends DisplayObject {
   }
 }
 
+enum SnakeNodeType {
+  HEAD,
+  BODY,
+  TAIL
+};
+
 class SnakeNode extends Sprite {
   private _dir: Dir;
   public get dir() { return this._dir; }
 
+  private type: SnakeNodeType;
   private nodeClass: string;
 
-  private constructor(nodeClass: string, dir: Dir) {
+  private constructor(type: SnakeNodeType | string, dir: Dir) {
     super();
+
     this._dir = dir;
-    this.nodeClass = nodeClass;
-    this.el.classList.add('node', nodeClass);
+
+    switch (type) {
+      case SnakeNodeType.HEAD:
+      case SnakeNodeType.TAIL:
+        this.type = type;
+        this.nodeClass = SnakeNode.endNodeClass(type, dir);
+        break;
+      default:
+        this.type = SnakeNodeType.BODY;
+        this.nodeClass = `body-${type as unknown as string}`;
+        break;
+    }
+    
+    this.el.classList.add('node', this.nodeClass);
   }
 
   public static head(dir: Dir) {
-    return new SnakeNode(SnakeNode.endNodeClass('head', dir), dir);
+    return new SnakeNode(SnakeNodeType.HEAD, dir);
   }
 
-  public static body(dir: Dir, type?: string) {
-    return new SnakeNode(type ? `body-${type}` : 'body', dir);
+  public static body(dir: Dir, subType?: string) {
+    return new SnakeNode(subType, dir);
   }
 
   public static tail(dir: Dir) {
-    return new SnakeNode(SnakeNode.endNodeClass('tail', dir), dir);
+    return new SnakeNode(SnakeNodeType.TAIL, dir);
   }
   
+  private static BODY_NODE_DIR_STATE_TABLE = [
+    ['v', 'tl', null, 'tr'],
+    ['br', 'h', 'tr', null],
+    [null, 'bl', 'v', 'br'],
+    ['bl', null, 'tl', 'h'],
+  ];
+
   public updateDir(newDir: Dir) {
     const oldDir = this.dir;
 
-    if (this.nodeClass.startsWith('head')) {
-      if (newDir != oldDir) {
-        this.el.classList.remove(this.nodeClass);
-        this.nodeClass = SnakeNode.endNodeClass('head', newDir);
-        this.el.classList.add(this.nodeClass);
-      }
-    } else if (this.nodeClass.startsWith('tail')) {
-      if (newDir != oldDir) {
-        this.el.classList.remove(this.nodeClass);
-        this.nodeClass = SnakeNode.endNodeClass('tail', newDir);
-        this.el.classList.add(this.nodeClass);
-      }
-    } else {
-      let newType: string | null = null;
-      switch (oldDir) {
-        case Dir.UP:
-          switch (newDir) {
-            case Dir.UP:
-              newType = 'v';
-              break;
-            case Dir.RIGHT:
-              newType = '2';
-              break;
-            case Dir.LEFT:
-              newType = '3';
-              break;
-          }
-          break;
-        case Dir.RIGHT:
-          switch (newDir) {
-            case Dir.RIGHT:
-              newType = 'h';
-              break;
-            case Dir.DOWN:
-              newType = '3';
-              break;
-            case Dir.UP:
-              newType = '4';
-              break;
-          }
-          break;
-        case Dir.DOWN:
-          switch (newDir) {
-            case Dir.DOWN:
-              newType = 'v';
-              break;
-            case Dir.LEFT:
-              newType = '4';
-              break;
-            case Dir.RIGHT:
-              newType = '1';
-              break;
-          }
-          break;
-        case Dir.LEFT:
-          switch (newDir) {
-            case Dir.LEFT:
-              newType = 'h';
-              break;
-            case Dir.UP:
-              newType = '1';
-              break;
-            case Dir.DOWN:
-              newType = '2';
-              break;
-          }
-          break;
-      }
-
-      const newNodeClass = `body-${newType}`;
-      if (newType && this.nodeClass != newNodeClass) {
-        this.el.classList.remove(this.nodeClass);
-        this.nodeClass = newNodeClass;
-        this.el.classList.add(this.nodeClass);
-      }
+    switch (this.type) {
+      case SnakeNodeType.HEAD:
+      case SnakeNodeType.TAIL:
+        if (newDir != oldDir) {
+          const newNodeClass = SnakeNode.endNodeClass(this.type, newDir);
+          this.el.classList.replace(this.nodeClass, newNodeClass);
+          this.nodeClass = newNodeClass;
+        }
+        break;
+      case SnakeNodeType.BODY:
+        let newType: string | null = SnakeNode.BODY_NODE_DIR_STATE_TABLE[oldDir][newDir];
+        const newNodeClass = `body-${newType}`;
+        if (newType && this.nodeClass != newNodeClass) {
+          this.el.classList.replace(this.nodeClass, newNodeClass);
+          this.nodeClass = newNodeClass;
+        }
+        break;
     }
     
     this._dir = newDir;
   }
 
-  private static endNodeClass(name: string, dir: Dir) {
-    return `${name}-${['u', 'r', 'd', 'l'][dir]}`;
+  private static endNodeClass(type: SnakeNodeType, dir: Dir) {
+    return `${type == SnakeNodeType.HEAD ? 'head' : 'tail'}-${['u', 'r', 'd', 'l'][dir]}`;
   }
 }

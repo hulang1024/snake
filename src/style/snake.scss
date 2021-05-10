@@ -4,7 +4,8 @@
 $snake-node-classes:
   head-u,head-r,head-d,head-l,
   tail-u,tail-r,tail-d,tail-l,
-  body-1,body-2,body-3,body-4,body-v,body-h;
+  body-bl,body-tl,body-tr,body-br,body-v,body-h;
+
 .snake {
   z-index: 1;
   filter: var(--color-filter) $sprite-shadow-filter;
