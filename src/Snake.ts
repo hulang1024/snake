@@ -45,19 +45,18 @@ export default class Snake extends DisplayObject {
 
   private head: SnakeNode;
 
-  public msSpeedMin = 16.666 * 30;
+  public speedMin = 2;
 
-  public msSpeedMax = 16.666 * 2;
+  public speedMax = 150;
 
   public isSpeedUpToMax = false;
 
-  // 多少毫秒移动一步
-  private _msSpeed = this.msSpeedMin;
-  public get msSpeed() { return this._msSpeed; }
-  public set msSpeed(val: number) { this._msSpeed = val; }
+  private _speed = this.speedMin;
+  public get speed() { return this._speed; }
+  public set speed(val: number) { this._speed = val; }
 
   // 加速度dt因子
-  private accel = 200;
+  private accel = 60;
 
   private map: GameMap;
 
@@ -83,14 +82,14 @@ export default class Snake extends DisplayObject {
     }
 
     if (this.isSpeedUpToMax) {
-      if (this._msSpeed > this.msSpeedMax) {
-        this._msSpeed = Math.max(this._msSpeed - this.accel * dt, this.msSpeedMax);
+      if (this._speed < this.speedMax) {
+        this._speed = Math.min(this._speed + this.accel * dt, this.speedMax);
       }
     } else {
-      if (this._msSpeed < this.msSpeedMin) {
-        this._msSpeed = Math.min(this._msSpeed + this.accel * dt, this.msSpeedMin);
-      } else if (this._msSpeed > this.msSpeedMin) {
-        this._msSpeed = Math.max(this._msSpeed - this.accel * dt, this.msSpeedMin);
+      if (this._speed > this.speedMin) {
+        this._speed = Math.max(this._speed - this.accel * dt, this.speedMin);
+      } else if (this._speed < this.speedMin) {
+        this._speed = Math.min(this._speed + this.accel * dt, this.speedMin);
       }
     }
 
@@ -101,13 +100,14 @@ export default class Snake extends DisplayObject {
 
     this.updateAccTime += dt * 1000;
 
-    if (this.updateAccTime < this._msSpeed) {
+    const speed = this._speed / 100;
+
+    let offset = Math.floor(this.updateAccTime / (1000 / 60) * speed);
+    if (offset == 0) {
       return;
     }
 
-    let offset = Math.round(this.updateAccTime / this._msSpeed);
-
-    this.updateAccTime %= this._msSpeed;
+    this.updateAccTime = this.updateAccTime / (1000 / 60) % speed;
 
     // 因为每步都需要检测，所以使用for而不是offset作为距离乘数
     for (; offset > 0; offset--) {
@@ -163,7 +163,7 @@ export default class Snake extends DisplayObject {
 
     head.updateDir(this.dir);
     
-    for(var i = this.nodes.length - 1; i >= 1; i--) {
+    for(let i = this.nodes.length - 1; i >= 1; i--) {
       const curr = this.nodes[i];
       // 新加入节点，在此帧绘制
       if (!curr.el.parentNode) {
@@ -211,8 +211,8 @@ export default class Snake extends DisplayObject {
     newBodyNode.setPosition(tail.x, tail.y);
     this.nodes.splice(this.nodes.length - 1, 0, newBodyNode);
 
-    if (this._msSpeed > 0) {
-      this._msSpeed = Math.max(16.666, this._msSpeed - 4.16);
+    if (this._speed > 0) {
+      this._speed = Math.max(16.666, this._speed - 4.16);
     }
   }
 
@@ -322,9 +322,9 @@ class SnakeNode extends Sprite {
         }
         break;
       case SnakeNodeType.BODY:
-        let newType: string | null = SnakeNode.BODY_NODE_DIR_STATE_TABLE[oldDir][newDir];
+        const newType: string | null = SnakeNode.BODY_NODE_DIR_STATE_TABLE[oldDir][newDir];
         const newNodeClass = `body-${newType}`;
-        if (newType && this.nodeClass != newNodeClass) {
+        if (this.nodeClass != newNodeClass) {
           this.el.classList.replace(this.nodeClass, newNodeClass);
           this.nodeClass = newNodeClass;
         }

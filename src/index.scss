@@ -1,7 +1,31 @@
 @import 'style/game.scss';
+@import 'style/gamepad.scss';
 
 @font-face {
   font-family: 'lcd-digital';
   src: url('fonts/wwDigital.ttf');
   src: url('fonts/wwDigital.ttf') format('truetype');
+}
+
+.help {
+  padding: 8px;
+  font-size: 13px;
+}
+
+html.desktop {
+  .desktop {
+    display: block;
+  }
+  .mobile {
+    display: none;
+  }
+}
+
+html.mobile {
+  .desktop {
+    display: none;
+  }
+  .mobile {
+    display: block;
+  }
 }

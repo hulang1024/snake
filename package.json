@@ -23,5 +23,8 @@
     "node-sass": "^5.0.0",
     "tsify": "^5.0.2",
     "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "current-device": "^0.10.2"
   }
 }

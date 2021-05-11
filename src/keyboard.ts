@@ -17,24 +17,24 @@ export enum Key {
 }
 
 export class Keyboard {
-  protected readonly keyPressedStates: Map<number, boolean> = new Map();
+  private readonly pressedStates: Map<number, boolean> = new Map();
 
   constructor({ onKeyDown, onKeyUp }: { onKeyDown: Function, onKeyUp: Function }) {
     document.addEventListener('keydown', (event: KeyboardEvent) => {
       onKeyDown(event);
-      this.keyPressedStates.set(event.keyCode, true);
+      this.pressedStates.set(event.keyCode, true);
     });
     document.addEventListener('keyup', (event: KeyboardEvent) => {
       onKeyUp(event);
-      this.keyPressedStates.set(event.keyCode, false);
+      this.pressedStates.set(event.keyCode, false);
     });
   }
 
   public isPressed(...keys: Key[]) {
-    return keys.every((k) => this.keyPressedStates.get(k));
+    return keys.every((k) => this.pressedStates.get(k));
   }
 
   public isPressedAny(...keys: Key[]) {
-    return keys.find((k) => this.keyPressedStates.get(k)) != null;
+    return keys.find((k) => this.pressedStates.get(k)) != null;
   }
 }

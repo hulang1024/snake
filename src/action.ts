@@ -1,0 +1,13 @@
+enum Action {
+  DIR_UP,
+  DIR_RIGHT,
+  DIR_DOWN,
+  DIR_LEFT,
+  OK,
+  SPEED_DOWN_INSTANT,
+  SPEED_UP,
+  ADJUST_MIN_SPEED_INC,
+  ADJUST_MIN_SPEED_DEC,
+}
+
+export default Action;

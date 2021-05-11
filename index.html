@@ -7,13 +7,20 @@
     <link rel="stylesheet" type="text/css" href="index.css" />
     <title>Snake</title>
 </head>
-    <div style="padding: 8px;font-size: 13px;">
-        <p>回车：开始/暂停/继续游戏。</p>
+<body>
+    <div class="help desktop">
+        <p>回车：开始/暂停/继续游戏</p>
         <p>方向键/WDSA：控制蛇的移动方向，按下不松开则是加速与Shift键相同</p>
         <p>Shift：逐渐加速到最大速</p>
         <p>空格：瞬时减到最小速</p>
         <p>I：调整加大最小速</p>
         <p>O：调整减小最小速</p>
+    </div>
+    <div class="help mobile">
+        <p>OK：开始/暂停/继续游戏</p>
+        <p>方向键：控制蛇的移动方向，按下不松开则是加速</p>
+        <p>⚡：逐渐加速到最大速</p>
+        <p>🐢：瞬时减到最小速</p>
     </div>
     <div id="game-container" class="game-container">
         <div class="hud">
@@ -40,13 +47,31 @@
             </div>
         </div>
         <div class="fps-display"><label>FPS:</label><span class="value"></span></div>
-        <div class="overlay game-start">按回车开始/暂停游戏</div>
-        <div class="overlay game-pause">游戏暂停，按回车继续游戏</div>
+        <div class="overlay game-start">按<span class="ok-key-name">回车键</span>开始/暂停游戏</div>
+        <div class="overlay game-pause">游戏暂停，按<span class="ok-key-name">回车键</span>继续游戏</div>
         <div class="overlay game-over">
             <div>游戏结束</div>
-            <div>按回车重新开始游戏</div>
+            <div>按<span class="ok-key-name">回车键</span>重新开始游戏</div>
         </div>
         <div class="map-container"></div>
+    </div>
+
+    <div class="gamepad">
+        <div class="dir-control">
+            <div class="row">
+                <button class="btn up"></button>
+            </div>
+            <div class="row">
+                <button class="btn left"></button>
+                <button class="btn right"></button>
+            </div>
+            <div class="row">
+                <button class="btn down"></button>
+            </div>
+        </div>
+        <button class="btn ok">OK</button>
+        <button class="btn speed-down">🐢</button>
+        <button class="btn speed-up">⚡</button>
     </div>
 
     <script src="bundle.js"></script>

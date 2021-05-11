@@ -21,17 +21,17 @@ export default class SpeedDisplay extends DisplayObject {
 
   public onUpdate(dt: number) {
     const { snake } = this;
-    if (snake.msSpeedMin != this.min) {
-      this.min = snake.msSpeedMin;
-      this.minValueEl.innerText = this.min.toFixed(1);
+    if (snake.speedMin != this.min) {
+      this.min = snake.speedMin;
+      this.minValueEl.innerText = this.min.toFixed(0);
     }
-    if (snake.msSpeed != this.cur) {
-      this.cur = snake.msSpeed;
-      this.curValueEl.innerText = this.cur.toFixed(1);
+    if (snake.speed != this.cur) {
+      this.cur = snake.speed;
+      this.curValueEl.innerText = this.cur.toFixed(0);
     }
-    if (snake.msSpeedMax != this.max) {
-      this.max = snake.msSpeedMax;
-      this.maxValueEl.innerText = this.max.toFixed(1);
+    if (snake.speedMax != this.max) {
+      this.max = snake.speedMax;
+      this.maxValueEl.innerText = this.max.toFixed(0);
     }
   }
 }
