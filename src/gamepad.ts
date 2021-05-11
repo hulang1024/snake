@@ -47,6 +47,10 @@ export default class Gamepad {
         pressedStates.set(getGamepadButton(this), false);
         return false;
       });
+      btnEl.addEventListener('touchcancel', function() {
+        pressedStates.set(getGamepadButton(this), false);
+        return false;
+      });
     });
   }
 
