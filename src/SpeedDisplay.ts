@@ -19,7 +19,7 @@ export default class SpeedDisplay extends DisplayObject {
     this.maxValueEl = document.querySelector('.speed-display .values > .max');
   }
 
-  public onUpdate(dt: number) {
+  public onUpdate() {
     const { snake } = this;
     if (snake.speedMin != this.min) {
       this.min = snake.speedMin;

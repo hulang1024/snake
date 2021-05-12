@@ -178,44 +178,42 @@ export default class SnakeGame extends Game {
   }
 
   protected onUpdate(dt: number): void {
-    if (this.isPause) {
-      return;
-    }
+    if (!this.isPause) {
+      const { snake } = this;
 
-    const { snake } = this;
+      // todo: 消除按键硬编码
+      let isSpeedUpToMax = false;
+      if (this.gamepad) {
+        if (!this.gamepad.isPressed(GamepadButton.speedDown)) {
+          isSpeedUpToMax ||= this.gamepad.isPressed(GamepadButton.speedUp);
+          isSpeedUpToMax ||= this.gamepad.isPressed(GAMEPAD_DIR_BUTTON_TABLE[snake.dir])
+            && this.gamepad.getPressDuration(GAMEPAD_DIR_BUTTON_TABLE[snake.dir]) > 200;
+        }
+      }
+      if (!this.keyboard.isPressed(Key.space)) {
+        isSpeedUpToMax ||= this.keyboard.isPressed(Key.shift);
+        const dirKey = this.keyboard.isPressedAny(...KEYBOARD_DIR_KEYS_TABLE[snake.dir]);
+        isSpeedUpToMax ||= dirKey && this.keyboard.getPressDuration(dirKey) > 200;
+      }
+      snake.isSpeedUpToMax = isSpeedUpToMax;
 
-    // todo: 消除按键硬编码
-    let isSpeedUpToMax = false;
-    if (this.gamepad) {
-      if (!this.gamepad.isPressed(GamepadButton.speedDown)) {
-        isSpeedUpToMax ||= this.gamepad.isPressed(GamepadButton.speedUp);
-        isSpeedUpToMax ||= this.gamepad.isPressed(GAMEPAD_DIR_BUTTON_TABLE[snake.dir])
-          && this.gamepad.getPressDuration(GAMEPAD_DIR_BUTTON_TABLE[snake.dir]) > 200;
+      this.gameMap.objects.forEach((object) => object.onUpdate(dt));
+      this.healthBar.onUpdate(dt);
+
+      if (this.rabbit.isDead) {
+        this.rabbit.isDead = false;
+        this.randomRabbitPosition();
+        this.scoreDisplay.score++;
+      }
+  
+      if (this.snake.isDead) {
+        this.isOver = true;
+        this.isPause = true;
+        this.gameOverOverlay.style.display = 'flex';
       }
     }
-    if (!this.keyboard.isPressed(Key.space)) {
-      isSpeedUpToMax ||= this.keyboard.isPressed(Key.shift);
-      const dirKey = this.keyboard.isPressedAny(...KEYBOARD_DIR_KEYS_TABLE[snake.dir]);
-      isSpeedUpToMax ||= dirKey && this.keyboard.getPressDuration(dirKey) > 200;
-    }
-    snake.isSpeedUpToMax = isSpeedUpToMax;
 
-    this.gameMap.objects.forEach((object) => object.onUpdate(dt));
-
-    this.speedDisplay.onUpdate(dt);
-    this.healthBar.onUpdate(dt);
-    
-    if (this.rabbit.isDead) {
-      this.rabbit.isDead = false;
-      this.randomRabbitPosition();
-      this.scoreDisplay.score++;
-    }
-
-    if (snake.isDead) {
-      this.isOver = true;
-      this.isPause = true;
-      this.gameOverOverlay.style.display = 'flex';
-    }
+    this.speedDisplay.onUpdate();
   }
 
   private randomRabbitPosition() {
