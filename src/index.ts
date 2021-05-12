@@ -5,10 +5,17 @@ window.onload = () => {
   new SnakeGame();
 
   const isDesktop = (window as any).device.desktop();
+
   if (!isDesktop) {
+    document.body.addEventListener('contextmenu', function(event: Event) {
+      event.preventDefault();
+      return false;
+    });
+
     document.querySelectorAll('.ok-key-name').forEach((el) => {
       (el as HTMLElement).innerText = 'OK键';
     });
+    (document.querySelector('#btn-help') as HTMLElement).innerText = '?';
   }
 
   const btnHelp = document.getElementById('btn-help');

@@ -196,7 +196,6 @@ export default class SnakeGame extends Game {
     if (!this.keyboard.isPressed(Key.space)) {
       isSpeedUpToMax ||= this.keyboard.isPressed(Key.shift);
       const dirKey = this.keyboard.isPressedAny(...KEYBOARD_DIR_KEYS_TABLE[snake.dir]);
-      console.log(this.keyboard.getPressDuration(dirKey));
       isSpeedUpToMax ||= dirKey && this.keyboard.getPressDuration(dirKey) > 200;
     }
     snake.isSpeedUpToMax = isSpeedUpToMax;

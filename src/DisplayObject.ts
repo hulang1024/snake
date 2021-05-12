@@ -12,9 +12,14 @@ export default abstract class DisplayObject {
   }
 
   public setPosition(x: number, y: number) {
-    this._x = x;
-    this._y = y;
-    this.el.style.setProperty('--pos-transform', `translate(${x}px, ${y}px)`);
+    if (this.x != x) {
+      this._x = x;
+      this.el.style.setProperty('--x', `${x}px`);
+    }
+    if (this.y != y) {
+      this._y = y;
+      this.el.style.setProperty('--y', `${y}px`);
+    }
   }
 
   public get x() { return this._x; }

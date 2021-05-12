@@ -37,11 +37,17 @@ export default class Gamepad {
 
     const { pressedStates, pressedStartTimeMap } = this;
     el.querySelectorAll('.btn').forEach((btnEl) => {
+      btnEl.addEventListener('contextmenu', function(event: Event) {
+        event.preventDefault();
+        return false;
+      });
+
       btnEl.addEventListener('touchstart', function() {
         const btn = getGamepadButton(this);
         onPress(btn);
         pressedStates.set(btn, true);
         pressedStartTimeMap.set(btn, new Date().getTime());
+        navigator.vibrate?.(50);
         return false;
       });
 

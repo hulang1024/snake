@@ -12,7 +12,7 @@ $snake-node-classes:
 
   @for $i from 0 through 13 {
     .node.#{nth($snake-node-classes, $i + 1)} {
-      background-position: #{floor($i % 4) * -16px} #{floor($i / 4) * -16px};
+      background-position: #{floor($i % 4) * - $sprite-size} #{floor($i / 4) * - $sprite-size};
     }
   }
 

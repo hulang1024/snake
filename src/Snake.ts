@@ -119,7 +119,7 @@ export default class Snake extends DisplayObject {
     }
   }
 
-  private forward(): boolean {
+  private forward(isUserInput = true): boolean {
     const { head } = this;
 
     let offsetD = nodeSize;
@@ -157,7 +157,10 @@ export default class Snake extends DisplayObject {
         isHitSelf = this.isInSnake(head.x - offsetD, head.y);
         break;
     }
-    if (isHitWall || isHitSelf) {
+    if (isHitWall/* || isHitSelf*/) {
+      if (isUserInput) {
+        navigator.vibrate?.(100);
+      }
       return false;
     }
 
@@ -189,6 +192,7 @@ export default class Snake extends DisplayObject {
           this.grow();
           this.healthValue = 100;
           GameAudio.play('eat');
+          navigator.vibrate?.(100);
         }
       }
     }
@@ -243,17 +247,17 @@ export default class Snake extends DisplayObject {
       });
     };
 
+    const centerX = Math.floor(this.map.width / nodeSize / 2);
+    const centerY = Math.floor(this.map.height / nodeSize / 2);
     makeNodes([
-      [10, 1],
-      [10, 0]
+      [centerX, centerY],
+      [centerX, centerY - 1]
     ]);
 
     this.head = this.nodes[0];
 
-    for (let cnt = 0; cnt < 100; cnt++) {
-      this.dir = randomInt(0, 4);
-      this.forward();
-    }
+    this.dir = randomInt(0, 4);
+    this.forward(false);
   }
 }
 
