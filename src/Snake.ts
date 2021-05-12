@@ -58,6 +58,8 @@ export default class Snake extends DisplayObject {
   // 加速度dt因子
   private accel = 60;
 
+  private canCrossSelf = true;
+
   private map: GameMap;
 
   constructor(map: GameMap) {
@@ -157,7 +159,7 @@ export default class Snake extends DisplayObject {
         isHitSelf = this.isInSnake(head.x - offsetD, head.y);
         break;
     }
-    if (isHitWall/* || isHitSelf*/) {
+    if (isHitWall || (!this.canCrossSelf && isHitSelf)) {
       if (isUserInput) {
         navigator.vibrate?.(100);
       }
@@ -170,6 +172,7 @@ export default class Snake extends DisplayObject {
       const curr = this.nodes[i];
       // 新加入节点，在此帧绘制
       if (!curr.el.parentNode) {
+        this.resetNodesZIndex();
         const tail = this.nodes[this.nodes.length - 1];
         this.el.insertBefore(curr.el, tail.el);
       }
@@ -254,10 +257,18 @@ export default class Snake extends DisplayObject {
       [centerX, centerY - 1]
     ]);
 
+    this.resetNodesZIndex();
+
     this.head = this.nodes[0];
 
     this.dir = randomInt(0, 4);
     this.forward(false);
+  }
+
+  private resetNodesZIndex() {
+    this.nodes.forEach((node, index) => {
+      node.el.style.zIndex = (this.nodes.length - index).toString();
+    });
   }
 }
 
