@@ -2,7 +2,7 @@ import FPSDisplay from "./FPSDisplay";
 import { Keyboard } from "./keyboard";
 
 export default abstract class Game {
-  private fpsDisplay = new FPSDisplay();
+  protected fpsDisplay = new FPSDisplay();
   protected keyboard: Keyboard;
 
   constructor() {

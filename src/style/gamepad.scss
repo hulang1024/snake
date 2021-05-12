@@ -1,16 +1,18 @@
-$btn-size: 44px;
+$btn-size: 50px;
 
 .gamepad {
   position: absolute;
   bottom: 16px;
   left: 0px;
-  z-index: 2;
+  z-index: 3;
   display: none;
   align-items: center;
   justify-content: space-between;
-  padding: 0px 16px;
+  padding: 0px 8px;
   width: 100%;
+  height: $btn-size * 3;
   box-sizing: border-box;
+  user-select: none;
 
   .dir-control {
     width: $btn-size * 3;
@@ -26,6 +28,13 @@ $btn-size: 44px;
     }
   }
 
+  .speed-control {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 100%;
+  }
+
   .btn {
     width: $btn-size;
     height: $btn-size;
@@ -33,7 +42,7 @@ $btn-size: 44px;
     box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.2);
     border: none;
     outline: none;
-    border-radius: 8px;
+    border-radius: 100%;
     transition: all 0.1s ease;
     text-align: center;
     line-height: $btn-size;

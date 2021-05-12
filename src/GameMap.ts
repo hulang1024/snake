@@ -2,8 +2,8 @@ import DisplayObject from "./DisplayObject";
 import Sprite from "./sprite";
 
 export default class GameMap extends DisplayObject {
-  private _sprites: Set<Sprite> = new Set();
-  public get sprites() { return this._sprites; }
+  private _objects: Set<Sprite> = new Set();
+  public get objects() { return this._objects; }
 
   private _width;
   public get width() { return this._width; }
@@ -21,16 +21,16 @@ export default class GameMap extends DisplayObject {
     this.el.style.setProperty('--map-height', `${this.height}px`);
   }
 
-  public addSprite(sprite: Sprite) {
-    if (this._sprites.has(sprite)) {
+  public addChild(object: DisplayObject) {
+    if (this._objects.has(object)) {
       return;
     }
-    this.el.appendChild(sprite.el);
-    this._sprites.add(sprite);
+    this.el.appendChild(object.el);
+    this._objects.add(object);
   }
 
-  public removeSprite(sprite: Sprite) {
-    this.el.removeChild(sprite.el);
-    this._sprites.delete(sprite);
+  public removeChild(object: DisplayObject) {
+    this.el.removeChild(object.el);
+    this._objects.delete(object);
   }
 }

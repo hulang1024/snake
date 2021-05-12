@@ -8,21 +8,60 @@
     <title>Snake</title>
 </head>
 <body>
-    <div class="help desktop">
-        <p>回车：开始/暂停/继续游戏</p>
-        <p>方向键/WDSA：控制蛇的移动方向，按下不松开则是加速与Shift键相同</p>
-        <p>Shift：逐渐加速到最大速</p>
-        <p>空格：瞬时减到最小速</p>
-        <p>I：调整加大最小速</p>
-        <p>O：调整减小最小速</p>
+    <div class="help desktop" style="display: none;">
+        <table>
+            <caption>操作说明</caption>
+            <tr>
+                <td>回车</td>
+                <td>开始/暂停/继续游戏</td>
+            </tr>
+            <tr>
+                <td>方向键/WDSA</td>
+                <td>控制蛇的移动方向，按下不松开则是与Shift键功能相同</td>
+            </tr>
+            <tr>
+                <td>Shift</td>
+                <td>逐渐加速到最大速</td>
+            </tr>
+            <tr>
+                <td>空格</td>
+                <td>瞬时减到最小速</td>
+            </tr>
+            <tr>
+                <td>I</td>
+                <td>调整加大最小速</td>
+            </tr>
+            <tr>
+                <td>O</td>
+                <td>调整减小最小速</td>
+            </tr>
+        </table>
     </div>
-    <div class="help mobile">
-        <p>OK：开始/暂停/继续游戏</p>
-        <p>方向键：控制蛇的移动方向，按下不松开则是加速</p>
-        <p>⚡：逐渐加速到最大速</p>
-        <p>🐢：瞬时减到最小速</p>
+    <div class="help mobile" style="display: none;">
+        <table>
+            <caption>操作说明</caption>
+            <tr>
+                <td>OK</td>
+                <td>开始/暂停/继续游戏</td>
+            </tr>
+            <tr>
+                <td>方向按钮</td>
+                <td>控制蛇的移动方向，按下不松开则是与⚡按钮功能相同</td>
+            </tr>
+            <tr>
+                <td>⚡</td>
+                <td>逐渐加速到最大速</td>
+            </tr>
+            <tr>
+                <td>🐢</td>
+                <td>瞬时减到最小速</td>
+            </tr>
+        </table>
     </div>
-    <div id="game-container" class="game-container">
+
+    <button id="btn-help">操作说明</button>
+
+    <div class="game-container">
         <div class="hud">
             <div class="speed-display">
                 <div class="title">
@@ -46,7 +85,6 @@
                 <label>分</label>
             </div>
         </div>
-        <div class="fps-display"><label>FPS:</label><span class="value"></span></div>
         <div class="overlay game-start">按<span class="ok-key-name">回车键</span>开始/暂停游戏</div>
         <div class="overlay game-pause">游戏暂停，按<span class="ok-key-name">回车键</span>继续游戏</div>
         <div class="overlay game-over">
@@ -70,8 +108,10 @@
             </div>
         </div>
         <button class="btn ok">OK</button>
-        <button class="btn speed-down">🐢</button>
-        <button class="btn speed-up">⚡</button>
+        <div class="speed-control">
+            <button class="btn speed-down">🐢</button>
+            <button class="btn speed-up">⚡</button>
+        </div>
     </div>
 
     <script src="bundle.js"></script>

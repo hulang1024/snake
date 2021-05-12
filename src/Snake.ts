@@ -45,7 +45,7 @@ export default class Snake extends DisplayObject {
 
   private head: SnakeNode;
 
-  public speedMin = 2;
+  public speedMin = 3;
 
   public speedMax = 150;
 
@@ -68,7 +68,7 @@ export default class Snake extends DisplayObject {
 
     this.el.style.setProperty('--color-filter', `hue-rotate(${randomInt(0, 361)}deg)`);
 
-    this.map.addSprite(this);
+    this.map.addChild(this);
 
     this.init();
   }
@@ -182,7 +182,7 @@ export default class Snake extends DisplayObject {
 
   private checkCollide() {
     const { head } = this;
-    for (const sprite of this.map.sprites) {
+    for (const sprite of this.map.objects) {
       if (sprite instanceof Rabbit && !sprite.isDead) {
         if (head.x == sprite.x && head.y == sprite.y) {
           sprite.isDead = true;

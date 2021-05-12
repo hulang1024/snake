@@ -22,6 +22,7 @@ const BUTTONS = [
 
 export default class Gamepad {
   public readonly pressedStates: Map<GamepadButton, boolean> = new Map();
+  private readonly pressedStartTimeMap: Map<GamepadButton, number> = new Map();
 
   constructor({ onPress }: { onPress: (btn: GamepadButton) => void }) {
     const el = document.querySelector('.gamepad') as HTMLElement;
@@ -34,23 +35,24 @@ export default class Gamepad {
       }
     };
 
-    const { pressedStates } = this;
+    const { pressedStates, pressedStartTimeMap } = this;
     el.querySelectorAll('.btn').forEach((btnEl) => {
       btnEl.addEventListener('touchstart', function() {
         const btn = getGamepadButton(this);
         onPress(btn);
         pressedStates.set(btn, true);
+        pressedStartTimeMap.set(btn, new Date().getTime());
         return false;
       });
 
-      btnEl.addEventListener('touchend', function() {
-        pressedStates.set(getGamepadButton(this), false);
+      const handleTouchOver = function() {
+        const btn = getGamepadButton(this);
+        pressedStates.set(btn, false);
+        pressedStartTimeMap.set(btn, Infinity);
         return false;
-      });
-      btnEl.addEventListener('touchcancel', function() {
-        pressedStates.set(getGamepadButton(this), false);
-        return false;
-      });
+      };
+      btnEl.addEventListener('touchend', handleTouchOver);
+      btnEl.addEventListener('touchcancel', handleTouchOver);
     });
   }
 
@@ -59,6 +61,10 @@ export default class Gamepad {
   }
 
   public isPressedAny(...btns: GamepadButton[]) {
-    return btns.find((b) => this.pressedStates.get(b)) != null;
+    return btns.find((b) => this.pressedStates.get(b));
+  }
+
+  public getPressDuration(btn: GamepadButton) {
+    return new Date().getTime() - this.pressedStartTimeMap.get(btn);
   }
 }

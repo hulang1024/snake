@@ -8,6 +8,6 @@ export default class Rabbit extends Sprite {
     super();
   
     this.el.classList.add('rabbit');
-    map.addSprite(this);
+    map.addChild(this);
   }
 }

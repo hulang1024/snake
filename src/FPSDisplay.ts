@@ -6,7 +6,18 @@ export default class FPSDisplay extends DisplayObject {
 
   constructor() {
     super();
-    this.fpsValueEl = document.querySelector('.fps-display .value');
+
+    const { el } = this;
+
+    el.classList.add('fps-display');
+
+    const label = document.createElement('label');
+    label.innerText = 'FPS:';
+    el.appendChild(label);
+
+    this.fpsValueEl = document.createElement('span');
+    this.fpsValueEl.classList.add('value');
+    el.appendChild(this.fpsValueEl);
   }
 
   public onUpdate(dt: number) {

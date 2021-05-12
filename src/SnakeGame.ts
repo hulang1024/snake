@@ -24,7 +24,7 @@ const GAMEPAD_DIR_BUTTON_TABLE = [
   GamepadButton.down,
   GamepadButton.left,
 ];
-const DIR_ACTIONS = [Action.DIR_UP, Action.DIR_RIGHT, Action.DIR_DOWN, Action.DIR_LEFT];
+const DIR_ACTIONS = [Action.dirUp, Action.dirRight, Action.dirDown, Action.dirLeft];
 
 export default class SnakeGame extends Game {
   public container: HTMLElement;
@@ -49,6 +49,10 @@ export default class SnakeGame extends Game {
   constructor() {
     super();
     
+    const container = document.querySelector('.game-container') as HTMLElement;
+    this.container = container;
+    container.appendChild(this.fpsDisplay.el);
+
     const mapWidth = Math.min(document.body.offsetWidth - 16, SPRITE_SIZE * 30);
     const mapHeight = Math.min(document.body.offsetHeight - 60, SPRITE_SIZE * 24);
     this.gameMap = new GameMap(mapWidth, mapHeight);
@@ -61,9 +65,6 @@ export default class SnakeGame extends Game {
     this.scoreDisplay = new ScoreDisplay();
     this.healthBar = new HealthBar(this.snake);
 
-    const container = document.querySelector('.game-container') as HTMLElement;
-    this.container = container;
-    
     const mapContainer = document.querySelector('.map-container');
     mapContainer.appendChild(this.gameMap.el);
 
@@ -84,8 +85,11 @@ export default class SnakeGame extends Game {
             case GamepadButton.left:
               action = DIR_ACTIONS[btn];
               break;
+            case GamepadButton.speedDown:
+              action = Action.speedDownInstant;
+              break;
             case GamepadButton.ok:
-              action = Action.OK;
+              action = Action.ok;
               break;
           }
           this.onAction(action);
@@ -95,7 +99,7 @@ export default class SnakeGame extends Game {
   }
 
   public restart() {
-    this.gameMap.removeSprite(this.snake);
+    this.gameMap.removeChild(this.snake);
     this.snake = new Snake(this.gameMap);
     this.speedDisplay.snake = this.snake;
     this.healthBar.snake = this.snake;
@@ -115,16 +119,16 @@ export default class SnakeGame extends Game {
     let action: Action;
     switch (event.keyCode) {
       case Key.space:
-        action = Action.SPEED_DOWN_INSTANT;
+        action = Action.speedDownInstant;
         break;
       case Key.i:
-        action = Action.ADJUST_MIN_SPEED_INC;
+        action = Action.adjustMinSpeedInc;
         break;
       case Key.o:
-        action = Action.ADJUST_MIN_SPEED_DEC;
+        action = Action.adjustMinSpeedDec;
         break;
       case Key.enter:
-        action = Action.OK;
+        action = Action.ok;
         break;
     }
     this.onAction(action);
@@ -134,33 +138,33 @@ export default class SnakeGame extends Game {
     const { snake } = this;
 
     switch (action) {
-      case Action.DIR_UP:
+      case Action.dirUp:
         snake.dir = Dir.UP;
         break;
-      case Action.DIR_RIGHT:
+      case Action.dirRight:
         snake.dir = Dir.RIGHT;
         break;
-      case Action.DIR_DOWN:
+      case Action.dirDown:
         snake.dir = Dir.DOWN;
         break;
-      case Action.DIR_LEFT:
+      case Action.dirLeft:
         snake.dir = Dir.LEFT;
         break;
-      case Action.SPEED_DOWN_INSTANT:
+      case Action.speedDownInstant:
         snake.isSpeedUpToMax = false;
         snake.speed = snake.speedMin;
         break;
-      case Action.ADJUST_MIN_SPEED_INC:
+      case Action.adjustMinSpeedInc:
         if (snake.speedMin < snake.speedMax) {
           snake.speedMin = Math.min(snake.speedMin + 1, snake.speedMax);
         }
         break;
-      case Action.ADJUST_MIN_SPEED_DEC:
+      case Action.adjustMinSpeedDec:
         if (snake.speedMin > 1) {
           snake.speedMin = Math.max(snake.speedMin - 1, 1);;
         }
         break;
-      case Action.OK:
+      case Action.ok:
         if (this.isOver) {
           this.restart();
         }
@@ -183,16 +187,21 @@ export default class SnakeGame extends Game {
     // todo: 消除按键硬编码
     let isSpeedUpToMax = false;
     if (this.gamepad) {
-      isSpeedUpToMax ||= this.gamepad.isPressed(GamepadButton.speedUp)
-        || (!this.gamepad.isPressed(GamepadButton.speedDown)
-          && this.gamepad.isPressed(GAMEPAD_DIR_BUTTON_TABLE[snake.dir]));
+      if (!this.gamepad.isPressed(GamepadButton.speedDown)) {
+        isSpeedUpToMax ||= this.gamepad.isPressed(GamepadButton.speedUp);
+        isSpeedUpToMax ||= this.gamepad.isPressed(GAMEPAD_DIR_BUTTON_TABLE[snake.dir])
+          && this.gamepad.getPressDuration(GAMEPAD_DIR_BUTTON_TABLE[snake.dir]) > 200;
+      }
     }
-    isSpeedUpToMax ||= this.keyboard.isPressed(Key.shift)
-      || (!this.keyboard.isPressed(Key.space)
-        && this.keyboard.isPressedAny(...KEYBOARD_DIR_KEYS_TABLE[snake.dir]));
+    if (!this.keyboard.isPressed(Key.space)) {
+      isSpeedUpToMax ||= this.keyboard.isPressed(Key.shift);
+      const dirKey = this.keyboard.isPressedAny(...KEYBOARD_DIR_KEYS_TABLE[snake.dir]);
+      console.log(this.keyboard.getPressDuration(dirKey));
+      isSpeedUpToMax ||= dirKey && this.keyboard.getPressDuration(dirKey) > 200;
+    }
     snake.isSpeedUpToMax = isSpeedUpToMax;
 
-    this.gameMap.sprites.forEach((object) => object.onUpdate(dt));
+    this.gameMap.objects.forEach((object) => object.onUpdate(dt));
 
     this.speedDisplay.onUpdate(dt);
     this.healthBar.onUpdate(dt);
